@@ -25,6 +25,18 @@ compute_G2_cpp <- function(configuration, dummy, window, covariates, model, medi
     .Call(`_ppjsdm_compute_G2_cpp`, configuration, dummy, window, covariates, model, medium_range_model, short_range, medium_range, long_range, type, saturation, rho, theta, regressors, estimate_alpha, estimate_gamma, nthreads, dummy_distribution, mark_range)
 }
 
+get_sr_disp_papangelou_cpp <- function(configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads) {
+    .Call(`_ppjsdm_get_sr_disp_papangelou_cpp`, configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads)
+}
+
+get_mr_disp_papangelou_cpp <- function(configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads) {
+    .Call(`_ppjsdm_get_mr_disp_papangelou_cpp`, configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads)
+}
+
+get_beta_covariates_papangelou_cpp <- function(configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads) {
+    .Call(`_ppjsdm_get_beta_covariates_papangelou_cpp`, configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads)
+}
+
 #' Check if a configuration contains duplicates.
 #'
 #' @param configuration Configuration.

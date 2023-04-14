@@ -9,24 +9,29 @@ Description: Point processes in joint species distribution models.
 License: MIT + file LICENSE
 Imports: 
     colorspace,
+    dplyr,
     GA,
     ggplot2,
     glmnet,
     graphics,
     h2o,
+    magrittr,
     Matrix,
     methods,
     oem,
+    purrr,
     Rcpp (>= 1.0.2),
     RcppThread,
     spatstat.geom,
-    stats
+    stats,
+    tibble,
+    tidyr
 Depends: R (>= 2.10.0)
 LinkingTo: Rcpp,
            RcppArmadillo,
            RcppThread,
            testthat
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 LazyData: true
 Suggests: 

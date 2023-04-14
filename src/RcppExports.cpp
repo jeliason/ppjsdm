@@ -161,6 +161,87 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// get_sr_disp_papangelou_cpp
+Rcpp::List get_sr_disp_papangelou_cpp(SEXP configuration, Rcpp::NumericVector x, Rcpp::NumericVector y, Rcpp::List model, Rcpp::CharacterVector medium_range_model, Rcpp::List alpha, Rcpp::NumericVector beta0, Rcpp::NumericMatrix beta, Rcpp::NumericMatrix gamma, Rcpp::List covariates, Rcpp::List short_range, Rcpp::NumericMatrix medium_range, Rcpp::NumericMatrix long_range, R_xlen_t saturation, Rcpp::IntegerVector type, Rcpp::NumericVector mark, int nthreads);
+RcppExport SEXP _ppjsdm_get_sr_disp_papangelou_cpp(SEXP configurationSEXP, SEXP xSEXP, SEXP ySEXP, SEXP modelSEXP, SEXP medium_range_modelSEXP, SEXP alphaSEXP, SEXP beta0SEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP covariatesSEXP, SEXP short_rangeSEXP, SEXP medium_rangeSEXP, SEXP long_rangeSEXP, SEXP saturationSEXP, SEXP typeSEXP, SEXP markSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type configuration(configurationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type model(modelSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type medium_range_model(medium_range_modelSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type beta0(beta0SEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type covariates(covariatesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type short_range(short_rangeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type medium_range(medium_rangeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type long_range(long_rangeSEXP);
+    Rcpp::traits::input_parameter< R_xlen_t >::type saturation(saturationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type mark(markSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_sr_disp_papangelou_cpp(configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_mr_disp_papangelou_cpp
+Rcpp::List get_mr_disp_papangelou_cpp(SEXP configuration, Rcpp::NumericVector x, Rcpp::NumericVector y, Rcpp::List model, Rcpp::CharacterVector medium_range_model, Rcpp::List alpha, Rcpp::NumericVector beta0, Rcpp::NumericMatrix beta, Rcpp::NumericMatrix gamma, Rcpp::List covariates, Rcpp::List short_range, Rcpp::NumericMatrix medium_range, Rcpp::NumericMatrix long_range, R_xlen_t saturation, Rcpp::IntegerVector type, Rcpp::NumericVector mark, int nthreads);
+RcppExport SEXP _ppjsdm_get_mr_disp_papangelou_cpp(SEXP configurationSEXP, SEXP xSEXP, SEXP ySEXP, SEXP modelSEXP, SEXP medium_range_modelSEXP, SEXP alphaSEXP, SEXP beta0SEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP covariatesSEXP, SEXP short_rangeSEXP, SEXP medium_rangeSEXP, SEXP long_rangeSEXP, SEXP saturationSEXP, SEXP typeSEXP, SEXP markSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type configuration(configurationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type model(modelSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type medium_range_model(medium_range_modelSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type beta0(beta0SEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type covariates(covariatesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type short_range(short_rangeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type medium_range(medium_rangeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type long_range(long_rangeSEXP);
+    Rcpp::traits::input_parameter< R_xlen_t >::type saturation(saturationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type mark(markSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_mr_disp_papangelou_cpp(configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_beta_covariates_papangelou_cpp
+Rcpp::List get_beta_covariates_papangelou_cpp(SEXP configuration, Rcpp::NumericVector x, Rcpp::NumericVector y, Rcpp::List model, Rcpp::CharacterVector medium_range_model, Rcpp::List alpha, Rcpp::NumericVector beta0, Rcpp::NumericMatrix beta, Rcpp::NumericMatrix gamma, Rcpp::List covariates, Rcpp::List short_range, Rcpp::NumericMatrix medium_range, Rcpp::NumericMatrix long_range, R_xlen_t saturation, Rcpp::IntegerVector type, Rcpp::NumericVector mark, int nthreads);
+RcppExport SEXP _ppjsdm_get_beta_covariates_papangelou_cpp(SEXP configurationSEXP, SEXP xSEXP, SEXP ySEXP, SEXP modelSEXP, SEXP medium_range_modelSEXP, SEXP alphaSEXP, SEXP beta0SEXP, SEXP betaSEXP, SEXP gammaSEXP, SEXP covariatesSEXP, SEXP short_rangeSEXP, SEXP medium_rangeSEXP, SEXP long_rangeSEXP, SEXP saturationSEXP, SEXP typeSEXP, SEXP markSEXP, SEXP nthreadsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type configuration(configurationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type model(modelSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type medium_range_model(medium_range_modelSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type beta0(beta0SEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type gamma(gammaSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type covariates(covariatesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type short_range(short_rangeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type medium_range(medium_rangeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericMatrix >::type long_range(long_rangeSEXP);
+    Rcpp::traits::input_parameter< R_xlen_t >::type saturation(saturationSEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type type(typeSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type mark(markSEXP);
+    Rcpp::traits::input_parameter< int >::type nthreads(nthreadsSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_beta_covariates_papangelou_cpp(configuration, x, y, model, medium_range_model, alpha, beta0, beta, gamma, covariates, short_range, medium_range, long_range, saturation, type, mark, nthreads));
+    return rcpp_result_gen;
+END_RCPP
+}
 // has_duplicates
 bool has_duplicates(Rcpp::List configuration);
 RcppExport SEXP _ppjsdm_has_duplicates(SEXP configurationSEXP) {
@@ -384,6 +465,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_ppjsdm_compute_A1_cpp", (DL_FUNC) &_ppjsdm_compute_A1_cpp, 5},
     {"_ppjsdm_compute_A2_plus_A3_cpp", (DL_FUNC) &_ppjsdm_compute_A2_plus_A3_cpp, 21},
     {"_ppjsdm_compute_G2_cpp", (DL_FUNC) &_ppjsdm_compute_G2_cpp, 19},
+    {"_ppjsdm_get_sr_disp_papangelou_cpp", (DL_FUNC) &_ppjsdm_get_sr_disp_papangelou_cpp, 17},
+    {"_ppjsdm_get_mr_disp_papangelou_cpp", (DL_FUNC) &_ppjsdm_get_mr_disp_papangelou_cpp, 17},
+    {"_ppjsdm_get_beta_covariates_papangelou_cpp", (DL_FUNC) &_ppjsdm_get_beta_covariates_papangelou_cpp, 17},
     {"_ppjsdm_has_duplicates", (DL_FUNC) &_ppjsdm_has_duplicates, 1},
     {"_ppjsdm_make_default_model_parameters", (DL_FUNC) &_ppjsdm_make_default_model_parameters, 10},
     {"_ppjsdm_make_types", (DL_FUNC) &_ppjsdm_make_types, 3},
