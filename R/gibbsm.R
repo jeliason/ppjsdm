@@ -414,6 +414,7 @@ gibbsm <- function(configuration_list,
                    return_raw_fitting_data = FALSE,
                    refit_glmnet = 0,
                    dummy_distribution = "binomial",
+                   ga_parallel=FALSE,
                    ...) {
   # refit_glmnet only has an effect with glmnet at the moment, do a quick check.
   if(refit_glmnet > 0 & fitting_package != "glmnet") {
@@ -607,7 +608,8 @@ gibbsm <- function(configuration_list,
     GA <- ga(type = "real-valued",
              fitness =  function(v) -to_optimise(v),
              lower = lower,
-             upper = upper)
+             upper = upper,
+             parallel=ga_parallel)
     result <- get_fit(GA@solution)
 
     # optim
