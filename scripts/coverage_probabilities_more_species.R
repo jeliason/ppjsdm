@@ -1,4 +1,5 @@
 remove(list = ls())
+# library(ppjsdm)
 library(ppjsdm)
 library(spatstat)
 seed <- 1
@@ -21,6 +22,7 @@ long_range <- matrix(0.12, ntypes, ntypes)
 covariates <- list(temperature = function(x, y) x)
 max_dummy <- 2000
 dummy_factor <- 1e4
+nthreads <- 2L
 
 # Beta0 below is the only part of the script you have to personalize if changing the number of types
 # The rough idea to obtain these values is to run the script a number of times with 1 replication,
@@ -87,7 +89,9 @@ samples <- ppjsdm::rgibbs(window = window,
                           saturation = saturation,
                           covariates = covariates,
                           beta = beta,
-                          steps = steps)
+                          steps = steps,
+                          nthreads = nthreads,
+                          deubg=TRUE)
 
 # Construct vector of true values
 true <- beta0

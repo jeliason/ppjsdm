@@ -392,22 +392,22 @@ model_matrix_papangelou.default <- function(configuration,
 
   model_matrix <- dplyr::left_join(disp,beta_covars,by=c("x","y"))
 
-  model_matrix %>%
-    dplyr::select(dplyr::contains("mr") | dplyr::contains("sr")) %>%
-    tibble::rownames_to_column() %>%
-    tidyr::pivot_longer(-1, names_to = c(".value", "set"), names_sep = "[_]") -> d
+  # model_matrix %>%
+  #   dplyr::select(dplyr::contains("mr") | dplyr::contains("sr")) %>%
+  #   tibble::rownames_to_column() %>%
+  #   tidyr::pivot_longer(-1, names_to = c(".value", "set"), names_sep = "[_]") -> d
 
-  sum_cols <- colnames(d)[-(1:2)]
+  # sum_cols <- colnames(d)[-(1:2)]
 
-  d <- d %>%
-    dplyr::mutate(overall = purrr::pmap_dbl(list(!!!rlang::parse_exprs(sum_cols)),sum)) %>%
-    tidyr::pivot_wider(names_from = set,values_from = c(!!!rlang::parse_exprs(sum_cols),overall))
+  # d <- d %>%
+  #   dplyr::mutate(overall = purrr::pmap_dbl(list(!!!rlang::parse_exprs(sum_cols)),sum)) %>%
+  #   tidyr::pivot_wider(names_from = set,values_from = c(!!!rlang::parse_exprs(sum_cols),overall))
 
-  model_matrix <- model_matrix %>%
-    tibble::rownames_to_column() %>%
-    dplyr::left_join(d) %>%
-    dplyr::select(-rowname) %>%
-    dplyr::relocate(x,y)
+  # model_matrix <- model_matrix %>%
+  #   tibble::rownames_to_column() %>%
+  #   dplyr::left_join(d) %>%
+  #   dplyr::select(-rowname) %>%
+  #   dplyr::relocate(x,y)
 
   return(model_matrix)
 }
