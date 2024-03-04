@@ -10,18 +10,23 @@ License: MIT + file LICENSE
 Imports: 
     circlize,
     colorspace,
+    dplyr,
     GA,
     ggnewscale,
     ggplot2,
     glmnet,
     graphics,
+    magrittr,
     Matrix,
     methods,
+    purrr,
     Rcpp (>= 1.0.2),
     rlang,
     scales,
     spatstat.geom,
-    stats
+    stats,
+    tibble,
+    tidyr
 Depends: R (>= 2.10.0)
 LinkingTo: Rcpp,
            RcppArmadillo,

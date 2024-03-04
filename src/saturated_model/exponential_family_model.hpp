@@ -113,8 +113,79 @@ public:
                     detail::compute_beta_dot_covariates(point, beta_, covariates_));
   }
 
+  template<typename Points, typename Configuration>
+  auto compute_beta_covariates_vectorized(const Points& points, const Configuration& configuration, int nthreads) const {
+    const auto number_covariates(covariates_.size());
+    const auto number_points(points.size());
+    std::vector<std::vector<double> > beta_covars(number_points,std::vector<double>(number_covariates));
+    // std::cout << "here 1" << std::endl;
+    for(int i = 0; i < points.size(); i++) {
+      for(int j = 0; j < covariates_.size(); j++) {
+        beta_covars[i][j] = beta_(get_type(points[i]), j) * covariates_[j](points[i]);
+      }
+    }
+    // std::cout << "here 2" << std::endl;
+    return beta_covars;
+  }
+
   auto get_number_types() const {
     return beta0_.size();
+  }
+
+  template<typename Points, typename Configuration>
+  auto get_short_range_dispersion_vectorized(const Points& points, const Configuration& configuration, int nthreads) const {
+    // Are any of the alpha rows non-zero?
+    std::vector<bool> is_any_alpha_nonzero(alpha_.size());
+    std::fill(is_any_alpha_nonzero.begin(), is_any_alpha_nonzero.end(), false);
+    for(typename Points::size_type i(0); i < size(points); ++i) {
+      for(decltype(alpha_.size()) j(0); j < alpha_.size(); ++j) {
+        if(!is_column_zero(alpha_[j], get_type(points[i]))) {
+          is_any_alpha_nonzero[j] = true;
+        }
+      }
+      if(std::all_of(is_any_alpha_nonzero.begin(),
+                     is_any_alpha_nonzero.end(),
+                     [](bool v) { return v; })) {
+        break;
+      }
+    }
+
+    // Precompute dispersion if required
+    const auto number_types(get_number_types());
+    using dispersion_t = decltype(compute_dispersion_for_fitting<true>(dispersion_[0], number_types, 1, configuration, points));
+    std::vector<dispersion_t> short_range_dispersion{};
+    for(decltype(dispersion_.size()) i(0); i < dispersion_.size(); ++i) {
+      if(is_any_alpha_nonzero[i]) {
+        short_range_dispersion.emplace_back(compute_dispersion_for_fitting<true>(dispersion_[i],
+                                                                                 number_types,
+                                                                                 nthreads,
+                                                                                 configuration,
+                                                                                 points));
+      }
+    }
+    return short_range_dispersion;
+  }
+
+  template<typename Points, typename Configuration>
+  auto get_medium_range_dispersion_vectorized(const Points& points, const Configuration& configuration, int nthreads) const {
+    // Are any of the gamma rows non-zero?
+    bool is_any_gamma_nonzero(false);
+    for(typename Points::size_type i(0); i < size(points); ++i) {
+      if(!is_column_zero(gamma_, get_type(points[i]))) {
+        is_any_gamma_nonzero = true;
+      }
+      if(is_any_gamma_nonzero) {
+        break;
+      }
+    }
+    // Precompute dispersion if required
+    const auto number_types(get_number_types());
+    using dispersion_t = decltype(compute_dispersion_for_fitting<true>(medium_range_dispersion_, number_types, 1, configuration, points));
+    dispersion_t medium_range_dispersion;
+    if(is_any_gamma_nonzero) {
+      medium_range_dispersion = compute_dispersion_for_fitting<true>(medium_range_dispersion_, number_types, nthreads, configuration, points);
+    }
+    return medium_range_dispersion;
   }
 
   auto get_saturation() const {
