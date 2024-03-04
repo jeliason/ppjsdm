@@ -250,7 +250,7 @@ model_matrix_papangelou.default <- function(configuration,
   # e.g., if one wants to predict at a new location.
   if(nlevels(configuration$types) != length(parameters$types)) {
     # In this case, everything is ok, we can evaluate the parameters on the subset of types
-    if(all(levels(configuration$types) %in% parameters$types)) {
+    if(all(levels(configuration$types) %in% parameters$full_types)) {
       parameters$alpha <- lapply(parameters$alpha, function(a) a[levels(configuration$types), levels(configuration$types)])
       parameters$gamma <- parameters$gamma[levels(configuration$types), levels(configuration$types)]
       parameters$short_range <- lapply(parameters$short_range, function(s) s[levels(configuration$types), levels(configuration$types)])
@@ -263,13 +263,13 @@ model_matrix_papangelou.default <- function(configuration,
       stop(paste0("The types of the configuration are not a subset of those given by the parameters, configuration: ",
                   paste0(levels(configuration$types), collapse = ", "),
                   " and supplied types: ",
-                  paste0(parameters$types, collapse = ", ")))
+                  paste0(parameters$full_types, collapse = ", ")))
     }
-  } else if(!all(levels(configuration$types) == parameters$types)) {
+  } else if(!all(levels(configuration$types) == parameters$full_types)) {
     stop(paste0("The types of the configuration do not correspond to those given by the parameters, configuration: ",
                 paste0(levels(configuration$types), collapse = ", "),
                 " and supplied types: ",
-                paste0(parameters$types, collapse = ", ")))
+                paste0(parameters$full_types, collapse = ", ")))
   }
 
   # At this point, the parameters should exactly correspond to the types of the configuration
