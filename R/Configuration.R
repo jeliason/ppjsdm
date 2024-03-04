@@ -179,8 +179,26 @@ as.Configuration.default <- function(configuration) {
 
 format_configuration <- function(configuration) {
   number_points <- length(configuration$x)
-  str <- paste0("An S3 object representing a configuration.\n\nNumber of points: ",
-                paste0(number_points, collapse = ", "),
+  min_marks <- if(number_points > 0) {
+    min(configuration$marks)
+  } else {
+    -Inf
+  }
+  max_marks <- if(number_points > 0) {
+    max(configuration$marks)
+  } else {
+    Inf
+  }
+  str <- paste0("A configuration of points.\n\nTotal number of points: ",
+                number_points,
+                ".\nTypes: ",
+                paste0(levels(configuration$types), collapse = ", "),
+                ".\nMarks in range [",
+                min_marks,
+                ", ",
+                max_marks,
+                "].\nNumber of points by type: ",
+                paste0(paste0(levels(configuration$types), " = ", table(configuration$types)), collapse = ", "),
                 ".\n")
   if(number_points > 0 && number_points < 50) {
     str <- paste0(str, "\nPoints in the format (x-coordinate, y-coordinate, type): ",
@@ -204,50 +222,71 @@ print.Configuration <- function(x, ...) {
   cat(format_configuration(x))
 }
 
-#' @importFrom ggplot2 aes_string coord_equal element_text geom_point ggplot ggtitle scale_color_manual scale_shape_manual theme theme_minimal xlab xlim ylab ylim
+#' @importFrom ggplot2 aes coord_equal element_text geom_point ggplot ggtitle guides scale_colour_manual scale_colour_viridis_d scale_shape_manual theme_minimal xlab xlim ylab ylim
+#' @importFrom rlang .data
+#' @importFrom scales breaks_extended
 #' @method plot Configuration
 #' @export
-plot.Configuration <- function(x, window, color, shape, ...) {
+plot.Configuration <- function(x, window, colours, shapes,
+                               base_size = 12, mark_range = c(1, 6), ...) {
   if(length(x$x) > 0) {
     if(missing(window)) {
       x_range <- c(min(x$x), max(x$x))
       y_range <- c(min(x$y), max(x$y))
     } else {
+      window <- as.Window(window)
       x_range <- x_range(window)
       y_range <- y_range(window)
     }
 
     df <- data.frame(x = x$x, y = x$y, Types = droplevels(x$types), Marks = x$marks)
-    if(missing(color)) {
-      color <- rep(c("#FF0000", "#00A08A", "#F2AD00", "#F98400", "#5BBCD6"), nlevels(df$Types))
+
+    if(missing(shapes)) {
+      shapes <- rep(c(16, 17, 15, 18), length.out = nlevels(df$Types))
     }
-    if(missing("shape")) {
-      shape <- rep(c(16, 17, 15), nlevels(df$Types))
-    }
+
     g <- ggplot(data = df)
+
     if(!all(df$Marks == 1.)) {
-      g <- g + geom_point(aes_string(x = 'x', y = 'y', colour = 'Types', shape = 'Types', size = 'Marks'))
+      g <- g + geom_point(aes(x = .data$x, y = .data$y, colour = .data$Types,
+                              shape = .data$Types, size = .data$Marks), alpha = 0.8) +
+        scale_size(range = mark_range, breaks = breaks_extended(6))
+      nr <- 6
     } else {
-      g <- g + geom_point(aes_string(x = 'x', y = 'y', colour = 'Types', shape = 'Types'))
+      g <- g + geom_point(aes(x = .data$x, y = .data$y, colour = .data$Types,
+                              shape = .data$Types), size = 2.5, alpha = 0.8)
+      nr <- 8
     }
-    g + xlim(x_range[1], x_range[2]) +
+
+    g <- g + xlim(x_range[1], x_range[2]) +
       ylim(y_range[1], y_range[2]) +
-      scale_color_manual(values = color) +
-      scale_shape_manual(values = shape) +
+      scale_shape_manual(values = shapes) +
       xlab(NULL) +
       ylab(NULL) +
       ggtitle("") +
       coord_equal() +
-      theme_minimal(base_size = 12) +
-      theme(plot.title = element_text(size = 11, hjust = 0.5),
-            axis.text.y = element_text(size = 12),
-            axis.text.x = element_text(size = 12))
+      theme_minimal(base_size = base_size)
+
+    if(!missing(colours)) {
+      g <- g + scale_colour_manual(values = rep(colours, nlevels(df$Types)))
+    } else {
+      g <- g + scale_colour_viridis_d(end = 0.9, option = "turbo")
+    }
+
+    g <- g + guides(colour = guide_legend(order = 1,
+                                          nrow = nr,
+                                          override.aes = list(size = 5)),
+                    shape = guide_legend(order = 1,
+                                         nrow = nr),
+                    size =  guide_legend(order = 2))
+
+    g
   }
 }
 
 #' Access x-coordinates of a configuration
 #'
-#' @param configuration The configuration.
+#' @param configuration Configuration.
 #' @export
 x_coordinates <- function(configuration) {
   configuration$x
@@ -255,7 +294,7 @@ x_coordinates <- function(configuration) {
 
 #' Access y-coordinates of a configuration
 #'
-#' @param configuration The configuration.
+#' @param configuration Configuration.
 #' @export
 y_coordinates <- function(configuration) {
   configuration$y
@@ -263,7 +302,7 @@ y_coordinates <- function(configuration) {
 
 #' Access types of a configuration
 #'
-#' @param configuration The configuration.
+#' @param configuration Configuration.
 #' @export
 types <- function(configuration) {
   configuration$types
@@ -271,10 +310,43 @@ types <- function(configuration) {
 
 #' Access marks of a configuration
 #'
-#' @param configuration The configuration.
+#' @param x Configuration.
+#' @param ... Unused.
+#' @importFrom spatstat.geom marks
+#' @exportS3Method spatstat.geom::marks Configuration
+#' @examples
+#' set.seed(1)
+#'
+#' # Create a configuration
+#' configuration <- ppjsdm::Configuration(x = 1:4, y = 2:5, marks = runif(4))
+#'
+#' # Get its marks
+#' print(marks(configuration))
+#'
+marks.Configuration <- function(x, ...) {
+  x$marks
+}
+
+#' Convert Configuration to a data.frame.
+#'
+#' @param x Configuration.
+#' @param ... Unused.
+#' @method as.data.frame Configuration
+#' @examples
+#' set.seed(1)
+#'
+#' # Create a configuration
+#' configuration <- ppjsdm::Configuration(x = 1:4, y = 2:5, marks = runif(4))
+#'
+#' # Convert it to a data.frame
+#' print(as.data.frame(configuration))
+#'
 #' @export
-marks <- function(configuration) {
-  configuration$marks
+as.data.frame.Configuration <- function(x, ...) {
+  data.frame(x = x$x,
+             y = x$y,
+             types = x$types,
+             marks = x$marks)
 }
 
 #' Convert a configuration class to a ppp from the SpatStat package.
@@ -286,13 +358,7 @@ marks <- function(configuration) {
 #' @importFrom spatstat.geom as.owin owin ppp
 #' @export
 as.ppp.Configuration <- function(X, W, ..., fatal = TRUE) {
-  types <- X$types
-  # The lines below "unfactor" types
-  types <- as.character(types)
-  if(all(sapply(types, function(t) suppressWarnings(!is.na(as.numeric(t)))))) {
-    types <- as.numeric(types)
-  }
-  ppp(X$x, X$y, window = as.owin(W), marks = types)
+  ppp(x = X$x, y = X$y, window = as.owin(W), marks = X$types)
 }
 
 #' Number of points in a configuration

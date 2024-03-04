@@ -4,11 +4,20 @@
 \alias{area.Rectangle_window}
 \title{Return the area of a rectangle window.}
 \usage{
-\method{area}{Rectangle_window}(window)
+\method{area}{Rectangle_window}(w)
 }
 \arguments{
-\item{window}{The window.}
+\item{w}{Window.}
 }
 \description{
 Return the area of a rectangle window.
+}
+\examples{
+# Construct a window
+
+window <- ppjsdm::Rectangle_window(x_range = c(0, 1), y_range = c(1, 3))
+
+# Compute area of a rectangle window
+
+print(area(window))
 }

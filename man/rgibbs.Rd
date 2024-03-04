@@ -11,5 +11,5 @@ rgibbs(...)
 the parameters of the Gibbs point process, or a fit object obtained from running `gibbsm`.}
 }
 \description{
-Sample a multivariate saturated pairwise interaction Gibbs point processes.
+IMPORTANT: Check ?rgibbs.default for the documentation.
 }

@@ -4,11 +4,20 @@
 \alias{area.Disk_window}
 \title{Return the area of a disk window.}
 \usage{
-\method{area}{Disk_window}(window)
+\method{area}{Disk_window}(w)
 }
 \arguments{
-\item{window}{The window.}
+\item{w}{Window.}
 }
 \description{
 Return the area of a disk window.
+}
+\examples{
+# Construct a window
+
+window <- ppjsdm::Disk_window(centre = c(0, 2), radius = 2)
+
+# Compute area of a rectangle window
+
+print(area(window))
 }

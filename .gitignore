@@ -8,3 +8,4 @@ doc
 Meta
 .vscode
 *.pdf
+*.aux

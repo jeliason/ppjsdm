@@ -1,5 +1,7 @@
 #' Sample a multivariate saturated pairwise interaction Gibbs point processes.
 #'
+#' IMPORTANT: Check ?rgibbs.default for the documentation.
+#'
 #' @param ... Parameters to be forwarded to the relevant method. Currently, either
 #' the parameters of the Gibbs point process, or a fit object obtained from running `gibbsm`.
 #' @export
@@ -9,7 +11,7 @@ rgibbs <- function(...) {
 
 #' Sample a multivariate saturated pairwise interaction Gibbs point processes with given parameters.
 #'
-#' @param window Simulation window.
+#' @param window Observation window. Preferably a `ppjsdm` Window, such as `ppjsdm::Rectangle_window`, but also accepts `spatstat` `im` or `owin` objects.
 #' @param alpha Repulsion matrix. Default is a square matrix of same size as types, filled with zeroes.
 #' @param gamma Medium range repulsion matrix. Default is a square matrix of same size as types, filled with zeroes.
 #' @param beta0 A vector representing the log_intensities of the point processes.
@@ -34,8 +36,10 @@ rgibbs <- function(...) {
 #' @param starting_configuration Optional configuration to start with when using the Metropolis-Hastings algorithm (steps > 0).
 #' @param nthreads Number of threads to use. Default is 1.
 #' @param debug Output debugging information (current only used with Metropolis-Hastings)?
+#' @param ... Not used.
 #' @export
 #' @method rgibbs default
+#' @md
 rgibbs.default <- function(window,
                            alpha,
                            gamma,
@@ -74,9 +78,13 @@ rgibbs.default <- function(window,
                                  medium_range_model = medium_range_model)
 
   if(is.null(only_simulate_these_types)) {
-    only_simulate_these_types <- seq_len(length(beta0))
+    only_simulate_these_types <- seq_len(length(parameters$beta0))
   }
   only_simulate_these_types <- only_simulate_these_types - 1
+
+  if(!is.null(starting_configuration)) {
+    starting_configuration <- as.Configuration(starting_configuration)
+  }
 
   rgibbs_cpp(window = parameters$window,
              alpha = parameters$alpha,
@@ -90,7 +98,7 @@ rgibbs.default <- function(window,
              saturation = parameters$saturation,
              steps = steps,
              nsim = nsim,
-             types = parameters$types,
+             types = parameters$full_types,
              model = parameters$model,
              medium_range_model = parameters$medium_range_model,
              drop = drop,
@@ -106,7 +114,7 @@ rgibbs.default <- function(window,
 #' Sample a multivariate Gibbs point processes from a fit object.
 #'
 #' @param fit Fit object obtained by running gibbsm.
-#' @param window Simulation window.
+#' @param window Observation window. Preferably a `ppjsdm` Window, such as `ppjsdm::Rectangle_window`, but also accepts `spatstat` `im` or `owin` objects.
 #' @param alpha Repulsion matrix. Default is a square matrix of same size as types, filled with zeroes.
 #' @param gamma Medium range repulsion matrix. Default is a square matrix of same size as types, filled with zeroes.
 #' @param beta0 A vector representing the log_intensities of the point processes.
@@ -125,6 +133,7 @@ rgibbs.default <- function(window,
 #' @param ... Forwarded to rgibbs.
 #' @export
 #' @method rgibbs gibbsm
+#' @md
 rgibbs.gibbsm <- function(fit,
                           window = fit$window,
                           alpha = fit$coefficients$alpha,

@@ -4,11 +4,20 @@
 \alias{area.Rectangle_window_union}
 \title{Return the area of a union of rectangle windows.}
 \usage{
-\method{area}{Rectangle_window_union}(window)
+\method{area}{Rectangle_window_union}(w)
 }
 \arguments{
-\item{window}{The window.}
+\item{w}{Window.}
 }
 \description{
 Return the area of a union of rectangle windows.
+}
+\examples{
+# Construct a window
+
+window <- ppjsdm::Rectangle_window_union(x_ranges = list(c(0, 1), c(1, 2)), y_ranges = list(c(1, 3), c(2, 3)))
+
+# Compute area of a union of rectangle windows
+
+print(area(window))
 }

@@ -1,7 +1,7 @@
 
 #' Sample a Poisson point processes
 #'
-#' @param window Simulation window. Default is a Rectangle window [0, 1]^2.
+#' @param window Observation window. Default is a Rectangle window \eqn{[0, 1]^2}. Preferably a `ppjsdm` Window, such as `ppjsdm::Rectangle_window`, but also accepts `spatstat` `im` or `owin` objects.
 #' @param lambda A vector representing the intensities of the multipoint Poisson point processes.
 #' Default is a vector of same size as types, filled with 100s.
 #' @param nsim Number of samples to generate. Default is 1.
@@ -10,6 +10,7 @@
 #' Default is TRUE.
 #' @param mark_range Range of additional marks to give to the points.
 #' @export
+#' @md
 rppp <- function(window = Rectangle_window(),
                  lambda = NULL,
                  nsim = 1,
@@ -18,11 +19,11 @@ rppp <- function(window = Rectangle_window(),
                  mark_range = c(1.0, 1.0)) {
   lambda <- unlist(lambda)
   types <- unlist(types)
-  number_types <- get_number_types_and_check_conformance(default_number_types = 1, lambda, types)
+  number_types <- get_number_types_and_check_conformance(default_number_types = 1, types = types, lambda)$number_types
   lambda <- construct_if_missing(x = lambda, def = 100, nrows = number_types, matrix = FALSE)
   types <- make_types(types = types, size = number_types, might_contain_name = lambda)
 
-  rppp_cpp(window = window,
+  rppp_cpp(window = as.Window(window),
            lambda = lambda,
            nsim = nsim,
            types = types,

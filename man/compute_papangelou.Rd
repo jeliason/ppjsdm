@@ -11,5 +11,5 @@ compute_papangelou(...)
 the parameters of the Gibbs point process, or a fit object obtained from running `gibbsm`.}
 }
 \description{
-Compute the Papangelou conditional intensity of the model.
+IMPORTANT: Check ?compute_papangelou.default for the documentation.
 }

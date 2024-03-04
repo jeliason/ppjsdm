@@ -4,11 +4,20 @@
 \alias{volume.Rectangle_window}
 \title{Return the volume of a rectangle window.}
 \usage{
-\method{volume}{Rectangle_window}(window)
+\method{volume}{Rectangle_window}(x)
 }
 \arguments{
-\item{window}{The window.}
+\item{x}{Window.}
 }
 \description{
 Return the volume of a rectangle window.
+}
+\examples{
+# Construct a window
+
+window <- ppjsdm::Rectangle_window(x_range = c(0, 1), y_range = c(1, 3))
+
+# Compute volume of a rectangle window
+
+print(volume(window))
 }

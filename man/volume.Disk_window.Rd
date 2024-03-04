@@ -4,11 +4,20 @@
 \alias{volume.Disk_window}
 \title{Return the volume of a disk window.}
 \usage{
-\method{volume}{Disk_window}(window)
+\method{volume}{Disk_window}(x)
 }
 \arguments{
-\item{window}{The window.}
+\item{x}{Window.}
 }
 \description{
 Return the volume of a disk window.
+}
+\examples{
+# Construct a window
+
+window <- ppjsdm::Disk_window(centre = c(0, 2), radius = 2)
+
+# Compute volume of a rectangle window
+
+print(volume(window))
 }

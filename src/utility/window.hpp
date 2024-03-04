@@ -160,17 +160,29 @@ private:
       return std::make_shared<Concrete_window<detail::Rectangle_window>>(marked_range);
     }
     else {
-      const std::string window_class = Rcpp::as<Rcpp::RObject>(window).attr("class");
+      const auto object_class = Rcpp::as<Rcpp::CharacterVector>(Rcpp::as<Rcpp::RObject>(window).attr("class"));
+      std::string window_class;
+      if(object_class.size() == 2) { // in this case, object is of Window class, with secondary class extracted below
+        if(Rcpp::as<std::string>(object_class[0]) == "Window") {
+          window_class = Rcpp::as<std::string>(object_class[1]);
+        } else if(Rcpp::as<std::string>(object_class[1]) == "Window") {
+          window_class = Rcpp::as<std::string>(object_class[0]);
+        } else {
+          Rcpp::stop("Window has two classes, but the first one is not the expected \"Window\".");
+        }
+      } else {
+        Rcpp::stop("The window does not have 2 classes, not sure what type of object it is.");
+      }
       if(window_class == "Rectangle_window") {
         return std::make_shared<Concrete_window<detail::Rectangle_window>>(window, marked_range);
       } else if(window_class == "Disk_window") {
         return std::make_shared<Concrete_window<detail::Disk_window>>(window, marked_range);
-      } else if(window_class == "im") {
+      } else if(window_class == "Im_window") {
         return std::make_shared<Concrete_window<detail::Im_window>>(window, marked_range);
       } else if(window_class == "Rectangle_window_union") {
         return std::make_shared<Concrete_window<detail::Rectangle_window_union>>(window, marked_range);
       } else {
-        Rcpp::stop("Unrecognised window type.");
+        Rcpp::stop(std::string("Unrecognised window type: ").append(window_class));
       }
     }
   }

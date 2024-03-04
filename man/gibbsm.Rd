@@ -16,7 +16,7 @@ gibbsm(
   saturation,
   dummy = NULL,
   debug = FALSE,
-  fitting_package = "glmnet",
+  fitting_package = c("glm", "glmnet"),
   which_lambda = "AIC",
   max_dummy = 0,
   min_dummy = 0,
@@ -25,14 +25,14 @@ gibbsm(
   use_regularization = FALSE,
   return_raw_fitting_data = FALSE,
   refit_glmnet = 0,
-  dummy_distribution = "binomial",
+  dummy_distribution = "stratified",
   ...
 )
 }
 \arguments{
 \item{configuration_list}{A single configuration or a list of configurations assumed to be drawn from the multivariate Gibbs.}
 
-\item{window}{Observation window.}
+\item{window}{Observation window. Preferably a \code{ppjsdm} Window, such as \code{ppjsdm::Rectangle_window}, but also accepts \code{spatstat} \code{im} or \code{owin} objects.}
 
 \item{covariates}{Environmental covariates driving the intensity.}
 
@@ -52,7 +52,7 @@ gibbsm(
 
 \item{debug}{Print debugging information?}
 
-\item{fitting_package}{Choices are glmnet, oem or glm.}
+\item{fitting_package}{Which fitting package to use to solve the logistic regression?}
 
 \item{which_lambda}{Which lambda to choose in the regularised fit? Choices are "AIC" (lambda that minimises AIC), "BIC" (lambda that minimises BIC) or "smallest" (smallest lambda).}
 
@@ -68,7 +68,7 @@ gibbsm(
 
 \item{return_raw_fitting_data}{Return the raw fitting data, before calling the GLM fitting package. Mostly used for debugging purposes on large datasets.}
 
-\item{refit_glmnet}{How many times more lambdas to use on a re-run of glmnet (currently only used with fitting_package = glmnet). For example, refit_glmnet = 0.5 re-runs the fitting procedure with a 50\% longer lambda sequence.}
+\item{refit_glmnet}{How many times more lambdas to use on a re-run of glmnet (currently only used with \code{fitting_package = glmnet}). For example, \code{refit_glmnet = 0.5} re-runs the fitting procedure with a 50\% longer lambda sequence.}
 
 \item{dummy_distribution}{How should the dummy distribution be drawn? Choices are "binomial" or "stratified".}
 

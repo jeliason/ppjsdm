@@ -9,80 +9,107 @@
   type = 1,
   mark = 1,
   configuration,
-  model,
-  medium_range_model,
   alpha,
-  beta0,
-  beta,
   gamma,
+  beta0,
   covariates,
+  beta,
   short_range,
   medium_range,
   long_range,
-  types,
   saturation,
-  grid_steps = c(1000, 1000),
-  steps = 0,
-  nthreads = 4,
+  types,
+  model,
+  medium_range_model,
+  grid_steps = c(100, 100),
+  nthreads = 1,
   use_log = FALSE,
   use_ggplot = TRUE,
   return_papangelou = FALSE,
   drop_type_from_configuration = FALSE,
-  show_only_type = FALSE,
+  show = "all",
   limits,
+  mark_range = c(1, 6),
+  base_size = 11,
+  full_configuration,
+  legend_title,
+  type_description = "Types",
+  mark_description = "Marks",
+  types_order,
+  colours,
+  shapes,
   ...
 )
 }
 \arguments{
-\item{window}{Observation window.}
+\item{window}{Observation window. Preferably a \code{ppjsdm} Window, such as \code{ppjsdm::Rectangle_window}, but also accepts \code{spatstat} \code{im} or \code{owin} objects.}
 
-\item{type}{Type of the point at which to evaluate the Papangelou conditional intensity.}
+\item{type}{Type of the point at which to evaluate the Papangelou conditional intensity. Either an integer representing the index of the type, or a string representing its label.}
 
 \item{mark}{Mark of the point.}
 
 \item{configuration}{Configuration of points at which to evaluate the Papangelou conditional intensity.}
 
-\item{model}{Model for short range interaction.}
+\item{alpha}{Matrix of short-range interaction coefficients.}
 
-\item{medium_range_model}{Model for medium range interaction.}
+\item{gamma}{Matrix of medium-range interaction coefficients.}
 
-\item{alpha}{Short range repulsion parameter.}
+\item{beta0}{Vector representing the intercept.}
 
-\item{beta0}{Log-intensity.}
+\item{covariates}{List of covariates. These are converted to the \code{im} format by applying \code{as.im} to all elements in the list.}
 
-\item{beta}{Covariates coefficients.}
+\item{beta}{Fitted regression coefficients with respect to covariates.}
 
-\item{gamma}{Medium range repulsion parameter.}
+\item{short_range}{Symmetric matrix of short-range interaction radii. Can also be a list of matrices, each entry representing a different potential.}
 
-\item{covariates}{Covariates.}
+\item{medium_range}{Symmetric matrix of medium-range interaction radii.}
 
-\item{short_range}{Matrix of short range distances.}
+\item{long_range}{Symmetric matrix of long-range interaction radii.}
 
-\item{medium_range}{Matrix of medium range distances.}
+\item{saturation}{Saturation parameter of the point process.}
 
-\item{long_range}{Matrix of long range distances.}
+\item{types}{Character vector, with entry i representing the name of type i.}
 
-\item{types}{Types of the points. Default is a vector (type1, type2, ...) of same size as n.}
+\item{model}{String representing the short-range model to use. The currently authorised models are obtained with a call to \code{show_short_range_models()}.}
 
-\item{saturation}{Saturation.}
+\item{medium_range_model}{String representing the medium-range model to use. The currently authorised models are obtained with a call to \code{show_medium_range_models()}.}
 
-\item{grid_steps}{Vector of length 2, representing the number of horizontal and vertical grid steps.}
+\item{grid_steps}{Vector of length 2, representing the number of horizontal and vertical grid steps. If a single value is given, it is assumed that the dimensions are the same along both axes.}
 
-\item{steps}{Nunber of steps in the Metropolis-Hastings simulation algorithm.}
-
-\item{nthreads}{Maximum number of threads for parallel computing.}
+\item{nthreads}{Maximum number of threads to use.}
 
 \item{use_log}{Plot the logarithm of the Papangelou conditional intensity instead?}
 
 \item{use_ggplot}{Use ggplot for fancier plot?}
 
-\item{return_papangelou}{Should we return the Papangelou intensity itself instead of plotting it?}
+\item{return_papangelou}{Should we return the Papangelou intensity as an \code{im} object instead of plotting it?}
 
-\item{drop_type_from_configuration}{Should we remove the considered type from the configuration?}
+\item{drop_type_from_configuration}{Should we remove the considered \code{type} from the configuration?}
 
-\item{show_only_type}{In the plot, should we show only the individuals of the configuration with the target type?}
+\item{show}{In the plot, should we show all points, no points, or only the individuals of the configuration with certain types?
+\code{show = "all"} shows all points, \code{show = "none"} shows no points, \code{show = "type"} shows only the focal type,
+and \code{show} can otherwise be a vector of types, in which case all the corresponding types will be shown.}
 
-\item{limits}{Limits for values of the Papamgelou conditional intensity in plotting functions.}
+\item{limits}{Limits for values of the Papangelou conditional intensity when plotting.}
+
+\item{mark_range}{(Optional) Vector of length two, representing the range of sizes used when plotting points with different marks.}
+
+\item{base_size}{Font size.}
+
+\item{full_configuration}{(Optional) Configuration object, perhaps different from \code{configuration}, to overlay on the Papangelou conditional intensity.
+This need not be the configuration used to compute the intensity, indeed, one might wanr to condition on some types, but show others on the final plot.}
+
+\item{legend_title}{Title to give to the legend describing the conditional intensity.}
+
+\item{type_description}{Name to give the types in the legend (e.g., "species" or "classes").}
+
+\item{mark_description}{Name to give the marks in the legend (e.g., "size" or "DBH").}
+
+\item{types_order}{(Optional) Order of the types in figure legend. Vector of the names of types to plot, ordered in a given way.}
+
+\item{colours}{(Optional) Colours to use when plotting points.}
+
+\item{shapes}{(Optional) Shapes to use when plotting points.}
 
 \item{...}{Ignored.}
 }

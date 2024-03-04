@@ -5,12 +5,22 @@
 #' @param ... Other fitted model objects.
 #' @param list List of fits to consider, in addition to object.
 #' @param debug Display debug information?
-#' @param time_limit Time limit measured in  `unit` that can be spent running this function.
+#' @param time_limit Time limit measured in  `unit` that can be spent running this function. This is a rough attempted upper-bound on run
+#' time that is sometimes exceeded if the first batch already takes longer than this limit.
+#' Nb: time_limit / 4 is allocated for the computation of each of the 4 underlying matrices that constitute the variance-covariance matrix.
+#' In mid-sized datasets, most of the time is spent computing A2 + A3 and (to a lesser extent) G2. For such data, A1 and S may be
+#' computed almost instantly, and time_limit / 2 will remain to compute the remaining two matrices. Use debug = TRUE to
+#' assess this in the target use-case.
 #' @param unit Unit used to measure the time limit (hours, mins, secs, etc).
 #' @param nthreads (optional) number of threads to use.
-#' @param npoints Target number of points in the restricted window that the vcov matrix is computed on. Computation is slower for larger values, but the vcov matrix is then better approximated.
+#' @param npoints Target number of points in the restricted window that the vcov matrix is computed on.
+#' Computation is slower for larger values, but the vcov matrix is then better approximated. The larger this is, the better.
 #' @param multiple_windows Compute A2 and A3 on a lot of small windows and which are then averaged out, or only on a single restricted window?
-#' @param assume_fitted_to_same_data Should the function assume that the data was fitted to the same data. If so and if multiple fits are supplied, the function assume that all configurations are identical. If not, the function assumes that the different fits are different realisations of the same point process.
+#' Setting this to FALSE uses the standard estimate, but can be excessively slow to compute on large datasets.
+#' The default of TRUE attempts to compute the estimate on multiple windows containing around npoints data points in each.
+#' @param assume_fitted_to_same_data Should the function assume that the model was fitted to the same data?
+#' If so and if multiple fits are supplied, the function assumes that all configurations are identical.
+#' If not, the function assumes that the different fits were obtained through different realisations of the same point process.
 #' @importFrom stats pnorm qnorm
 #' @export
 summary.gibbsm <- function(object,
@@ -23,6 +33,7 @@ summary.gibbsm <- function(object,
                            npoints = 2000,
                            multiple_windows = TRUE,
                            assume_fitted_to_same_data = FALSE) {
+  # TODO: rather than time_limit / 4, run first one in time_limit / 4, then divide remainder by 3 for next ones, etc.
   # time_limit below is the time_limit to run each of the 4 matrix constructions,
   # so allow time_limit / 4 for each one of them.
   time_limit <- time_limit / 4
@@ -85,7 +96,7 @@ summary.gibbsm <- function(object,
   # Compute fixed parameters
   number_types <- length(fits[[1]]$coefficients$beta0)
   types_names <- names(fits[[1]]$coefficients$beta0)
-  covariates_names <- names(fits[[1]]$covariates)
+  covariates_names <- names(fits[[1]]$parameters$covariates)
 
   # Make sure all fits have the same configuration
   if(!assume_fitted_to_same_data) {

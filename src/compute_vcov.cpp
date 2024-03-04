@@ -21,6 +21,7 @@
 #include "utility/im_wrapper.hpp"
 #include "utility/is_symmetric_matrix.hpp"
 #include "utility/lightweight_matrix.hpp"
+#include "utility/subset_to_nonNA.hpp"
 #include "utility/timer.hpp"
 #include "utility/window.hpp"
 #include "utility/window_concrete.hpp"
@@ -110,7 +111,7 @@ inline auto make_papangelou(const ppjsdm::Lightweight_matrix<double>& regressors
   omp_set_num_threads(nthreads);
 #endif
 
-  using computation_t = long double;
+  using computation_t = double;
   using size_t = decltype(regressors.ncol());
 
   std::vector<double> papangelou(regressors.nrow());
@@ -143,7 +144,7 @@ inline auto make_G2_binomial(const std::vector<double>& papangelou,
                              const std::vector<int>& type,
                              double window_volume,
                              int nthreads) {
-  using computation_t = long double;
+  using computation_t = double;
   using size_t = decltype(regressors.ncol());
 
 #ifdef _OPENMP
@@ -225,7 +226,7 @@ inline auto make_G2_stratified(const Configuration& configuration,
                                const ppjsdm::Saturated_model<FloatType>& medium_dispersion_model,
                                const ppjsdm::Im_list_wrapper& covariates,
                                int nthreads) {
-  using computation_t = long double;
+  using computation_t = double;
   using size_t = decltype(regressors.ncol());
 
   // Extract some values relating to the number of parameters and how they're ordered
@@ -240,15 +241,15 @@ inline auto make_G2_stratified(const Configuration& configuration,
 #endif
 
   // Construct other stratified point process
-  std::vector<computation_t> delta(rho.size());
-  for(decltype(rho.size()) i(0); i < rho.size(); ++i) {
-    delta[i] = static_cast<computation_t>(1.) / std::sqrt(static_cast<computation_t>(rho[i]));
-  }
-  const auto other_stratified(ppjsdm::rstratpp_single<Configuration>(window, delta, delta));
+  // std::vector<computation_t> delta(rho.size());
+  // for(decltype(rho.size()) i(0); i < rho.size(); ++i) {
+  //   delta[i] = static_cast<computation_t>(1.) / std::sqrt(static_cast<computation_t>(rho[i]));
+  // }
+  const auto other_stratified(subset_to_nonNA(ppjsdm::rstratpp_single<Configuration>(window, ppjsdm::get_number_points(dummy)), covariates));
 
   if(ppjsdm::size(dummy) != ppjsdm::size(other_stratified)) {
     Rcpp::Rcout << "Size dummy: " << ppjsdm::size(dummy) << " and size new stratified: " << ppjsdm::size(other_stratified) << ".\n";
-    Rcpp::stop("The dummy points and the independent draw of a stratified binomial point process should have the same number of points.");
+    Rcpp::stop("The dummy points and the independent draw of a stratified binomial point process should have the same number of points. This could be due to NA values on the covariates, causing some of the dummy points to be removed on the draws. To solve this, either subset the window to locations where the covariates are non-NA, or avoid dummy points distributed as a stratified point process.");
   }
 
   ppjsdm::Lightweight_square_matrix<computation_t> G2(number_parameters);
@@ -388,7 +389,7 @@ inline auto make_S(const std::vector<double>& papangelou,
                    const ppjsdm::Lightweight_matrix<double>& regressors,
                    const std::vector<int>& type,
                    int nthreads) {
-  using computation_t = long double;
+  using computation_t = double;
   using size_t = decltype(regressors.ncol());
 
 #ifdef _OPENMP
@@ -440,7 +441,7 @@ inline auto make_A1(const std::vector<double>& papangelou,
                     const ppjsdm::Lightweight_matrix<double>& regressors,
                     const std::vector<int>& type,
                     int nthreads) {
-  using computation_t = long double;
+  using computation_t = double;
   using size_t = decltype(regressors.ncol());
 
 #ifdef _OPENMP
@@ -590,15 +591,15 @@ inline auto make_A2_plus_A3(const std::vector<double>& papangelou,
 
     if(debug) {
       timer.set_current();
-      Rcpp::Rcout << "Starting computation of batch of dispersions...\n";
+      Rcpp::Rcout << "Starting computation of batch of dispersions... Number of points in batch: " << ppjsdm::size(restricted_configuration) << ".\n";
     }
     if(compute_some_alphas) {
       for(decltype(estimate_alpha.size()) k(0); k < estimate_alpha.size(); ++k) {
-        short_computation.emplace_back(ppjsdm::compute_dispersion_for_vcov(dispersion_model[k], number_types, configuration, restricted_configuration, filling, filling + increment, nthreads));
+        short_computation.emplace_back(ppjsdm::compute_dispersion_for_vcov(dispersion_model[k], number_types, configuration, restricted_configuration, filling, filling + increment, nthreads, debug));
       }
     }
     if(compute_some_gammas) {
-      medium_computation = ppjsdm::compute_dispersion_for_vcov(medium_dispersion_model, number_types, configuration, restricted_configuration, filling, filling + increment, nthreads);
+      medium_computation = ppjsdm::compute_dispersion_for_vcov(medium_dispersion_model, number_types, configuration, restricted_configuration, filling, filling + increment, nthreads, debug);
     }
     if(debug) {
       Rcpp::Rcout << "Computed batch of dispersions. Elapsed time: " << timer.print_elapsed_time();
@@ -834,7 +835,7 @@ Rcpp::List compute_vcov_helper(const Configuration& configuration,
                                               debug);
       }
     }
-    A2_plus_A3 /= (nx * ny);
+    A2_plus_A3 /= static_cast<double>(nx * ny);
   } else {
     detail::restrict_window(window, configuration, npoints, 0.05);
     A2_plus_A3 = detail::make_A2_plus_A3(papangelou,
@@ -1321,8 +1322,8 @@ Rcpp::NumericMatrix compute_G2_cpp(SEXP configuration,
                                   cpp_window.volume(),
                                   nthreads);
   } else if(dummy_distribution == std::string("stratified")) {
-    G2 = detail::make_G2_stratified(wrapped_configuration,
-                                    wrapped_dummy,
+    G2 = detail::make_G2_stratified(vector_configuration,
+                                    vector_dummy,
                                     cpp_window,
                                     Rcpp::as<std::vector<double>>(theta),
                                     Rcpp::as<std::vector<double>>(rho),
