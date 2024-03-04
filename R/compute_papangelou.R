@@ -248,7 +248,7 @@ model_matrix_papangelou.default <- function(configuration,
 
   # There are some cases where configuration might only have a subset of all types,
   # e.g., if one wants to predict at a new location.
-  if(nlevels(configuration$types) != length(parameters$types)) {
+  if(nlevels(configuration$types) != length(parameters$full_types)) {
     # In this case, everything is ok, we can evaluate the parameters on the subset of types
     if(all(levels(configuration$types) %in% parameters$full_types)) {
       parameters$alpha <- lapply(parameters$alpha, function(a) a[levels(configuration$types), levels(configuration$types)])
